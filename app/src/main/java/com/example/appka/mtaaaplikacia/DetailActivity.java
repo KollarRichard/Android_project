@@ -26,7 +26,7 @@ public class DetailActivity extends AppCompatActivity {
     private String address;
     private String category;
     private String imgUrl;
-    private String url = "https://api.backendless.com/3EDD8AD3-62EC-D330-FF4D-4855F4C77C00/96B7A309-C50A-45F9-A833-27DBC102ED1E/data/restaurants/";
+    private String url = "https://eu-api.backendless.com/39E3DA48-2F5E-4EC5-FF1C-15EC0E508400/7A5F072E-9D48-4C90-978F-DD29516E5562/data/restaurants/";
     private TextView mNameView;
     private TextView mAddressView;
     private TextView mCategoryView;
@@ -116,17 +116,13 @@ public class DetailActivity extends AppCompatActivity {
 
     private void getDetailedData(String s) {
         String newUrl;
-        JSONArray obj = new JSONArray();
+        JSONObject obj = new JSONObject();
         newUrl = url + s;
-        CustomJSONOArrayRequest detailRequest = new CustomJSONOArrayRequest(Request.Method.GET, newUrl, obj, new Response.Listener<JSONArray>() {
+        System.out.println(newUrl);
+        CustomJSONObjectRequest detailRequest = new CustomJSONObjectRequest(Request.Method.GET, newUrl, obj, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray r) {
-                JSONObject response = null;
-                try {
-                    response = r.getJSONObject(0);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            public void onResponse(JSONObject response) {
+                System.out.println(response);
                 JSONParser jsonParser = new JSONParser();
                 name = jsonParser.getSingleString(response, "rst_name");
                 System.out.println(name);
@@ -134,36 +130,34 @@ public class DetailActivity extends AppCompatActivity {
                 category = jsonParser.getSingleString(response, "rst_cat");
                 imgUrl = jsonParser.getSingleString(response, "rst_img_url");
                 itemOwnerID = jsonParser.getSingleString(response, "ownerId");
+                System.out.println(itemOwnerID);
                 getOwner(itemOwnerID);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                System.out.println(error);
+
                 if (error instanceof NoConnectionError) {
                     showError(0);
-                } else {
+                } /*else if(error != null) {
                     showError(error.networkResponse.statusCode);
-                }
+                }*/
             }
         });
         MTAAApplication.getInstance().addToRequestQueue(detailRequest, "itemdetail");
     }
 
     private void getOwner(String id) {
-        JSONArray obj = new JSONArray();
-        String url = "https://api.backendless.com/v1/data/Users?where=objectId%20%3D%20%27" + id + "%27";
-        CustomJSONOArrayRequest ownerRequest = new CustomJSONOArrayRequest(Request.Method.GET, url, obj, new Response.Listener<JSONArray>() {
+        JSONObject obj = new JSONObject();
+        String url = "https://eu-api.backendless.com/39E3DA48-2F5E-4EC5-FF1C-15EC0E508400/7A5F072E-9D48-4C90-978F-DD29516E5562/data/Users/" + id;
+        System.out.println(url);
+        CustomJSONObjectRequest ownerRequest = new CustomJSONObjectRequest(Request.Method.GET, url, obj, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray r) {
-                JSONObject response = null;
-                try {
-                    response = r.getJSONObject(0);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            public void onResponse(JSONObject response) {
+
+                System.out.println(response);
                 JSONParser jsonParser = new JSONParser();
-                owner = jsonParser.getStringFromJson(response, "login");
+                owner = jsonParser.getStringFromJson(response, "name");
                 setTextFields();
             }
         }, new Response.ErrorListener() {
@@ -172,9 +166,9 @@ public class DetailActivity extends AppCompatActivity {
                 System.out.println(error);
                 if (error instanceof NoConnectionError) {
                     showError(0);
-                } else {
+                } /*else {
                     showError(error.networkResponse.statusCode);
-                }
+                }*/
             }
         });
         MTAAApplication.getInstance().addToRequestQueue(ownerRequest, "getowner");

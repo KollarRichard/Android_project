@@ -31,7 +31,7 @@ public class EditActivity extends AppCompatActivity {
     private String category;
     private String imgUrl;
     private String nUrl;
-    private String url = "https://api.backendless.com/3EDD8AD3-62EC-D330-FF4D-4855F4C77C00/96B7A309-C50A-45F9-A833-27DBC102ED1E/data/restaurants/";
+    private String url = "https://eu-api.backendless.com/39E3DA48-2F5E-4EC5-FF1C-15EC0E508400/7A5F072E-9D48-4C90-978F-DD29516E5562/data/restaurants";
     private EditText mNameView;
     private EditText mAddressView;
     private Spinner mCategorySpin;

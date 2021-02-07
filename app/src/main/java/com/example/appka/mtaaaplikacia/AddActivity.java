@@ -114,7 +114,7 @@ public class AddActivity extends AppCompatActivity {
     private void attemptAdding() {
         mSpinner = (Spinner)findViewById(R.id.spinner);
         boolean cancel = false;
-        final String url = "https://api.backendless.com/3EDD8AD3-62EC-D330-FF4D-4855F4C77C00/96B7A309-C50A-45F9-A833-27DBC102ED1E/data/restaurants/";
+        final String url = "https://eu-api.backendless.com/39E3DA48-2F5E-4EC5-FF1C-15EC0E508400/7A5F072E-9D48-4C90-978F-DD29516E5562/data/restaurants";
         JSONObject obj = new JSONObject();
         JSONArray arr = new JSONArray();
         int cat = 1;

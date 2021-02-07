@@ -7,7 +7,7 @@ import org.json.JSONObject;
 public class JSONParser {
 
     public String[] getStringFromJson(JSONObject obj, String tag) {
-        String[] s = {"dat"};
+        String[] s = {"null_string"};
 
         try {
             s[0]  = obj.getString(tag);
