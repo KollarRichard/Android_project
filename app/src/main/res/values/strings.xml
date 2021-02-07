@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">MTAA Aplikacia</string>
+    <string name="title_activity_testactivity">testactivity</string>
+    <string name="title_activity_login">RESTaurants</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_log_in">Log in</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_register_user">Register account</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+
+    <!-- Random strings -->
+    <string name="prompt_login">Login:</string>
+    <string name="prompt_email_reg">Email:</string>
+    <string name="prompt_password_reg">Password:</string>
+    <string name="prompt_confirm_password">Confirm password:</string>
+    <string name="action_accept">Done</string>
+    <string name="general_error">Something went wrong :(</string>
+
+    <!-- String related to register -->
+    <string name="action_complete_registration">Done</string>
+    <string name="error_password_match">Passwords do not match</string>
+    <!-- Strings related to home -->
+    <string name="action_add">Add new</string>
+
+
+    <!-- strings related to spinner-->
+    <string name="spinner_title">Categories</string>
+    <string-array name="spinner_items">
+        <item>Coffee shop</item>
+        <item>Steak House</item>
+        <item>Pizzeria</item>
+        <item>Krcma</item>
+        <item>Opiovy doupe</item>
+        <item>Restaurants</item>
+
+
+    </string-array>
+</resources>

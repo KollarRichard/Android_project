@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:src="@drawable/kappa"
+            android:layout_width="55dip"
+            android:layout_height="55dip"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dip"/>
+
+        <TextView
+            android:id="@+id/firstLine"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignWithParentIfMissing="true"
+            android:singleLine="true"
+            android:text="Example application"
+            android:layout_marginTop="5dp"
+            android:textSize="20sp"
+            android:layout_alignTop="@+id/icon"
+            android:layout_toStartOf="@+id/icon" />
+
+        <TextView
+            android:id="@+id/secondLine"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:text="Address"
+            android:textSize="14sp"
+            android:layout_alignEnd="@id/firstLine"
+            android:layout_below="@id/firstLine" />
+</RelativeLayout>
