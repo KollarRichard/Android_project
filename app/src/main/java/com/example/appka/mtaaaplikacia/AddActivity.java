@@ -116,7 +116,7 @@ public class AddActivity extends AppCompatActivity {
         boolean cancel = false;
         final String url = "https://eu-api.backendless.com/39E3DA48-2F5E-4EC5-FF1C-15EC0E508400/7A5F072E-9D48-4C90-978F-DD29516E5562/data/restaurants";
         JSONObject obj = new JSONObject();
-        JSONArray arr = new JSONArray();
+
         int cat = 1;
         String name = mNameET.getText().toString();
         String address = mAddressET.getText().toString();
@@ -146,8 +146,8 @@ public class AddActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            arr.put(obj);
-            CustomJSONOArrayRequest addRequest = new CustomJSONOArrayRequest(Request.Method.POST, url, arr, new Response.Listener<JSONObject>() {
+            System.out.println(url);
+            CustomJSONObjectRequest addRequest = new CustomJSONObjectRequest(Request.Method.POST, url, obj, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     System.out.println(response.toString());
@@ -163,9 +163,9 @@ public class AddActivity extends AppCompatActivity {
                     System.out.println(error.networkResponse.statusCode);
                     if (error instanceof NoConnectionError) {
                         showError(0);
-                    } else {
+                    } /*else {
                         showError(error.networkResponse.statusCode);
-                    }
+                    }*/
                 }
             });
             MTAAApplication.getInstance().addToRequestQueue(addRequest, "addnew");

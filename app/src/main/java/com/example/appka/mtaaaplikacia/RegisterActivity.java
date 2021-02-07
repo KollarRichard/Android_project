@@ -22,8 +22,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private EditText mEmailView;
     private EditText mCPasswordView;
-    private final String url = "https://api.backendless.com/v1/users/register";
-    //https://api.backendless.com/3EDD8AD3-62EC-D330-FF4D-4855F4C77C00/96B7A309-C50A-45F9-A833-27DBC102ED1E/data/Users
+    private final String url = "https://eu-api.backendless.com/39E3DA48-2F5E-4EC5-FF1C-15EC0E508400/7A5F072E-9D48-4C90-978F-DD29516E5562/users/register";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,16 +125,11 @@ public class RegisterActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            arr.put(obj);
-            CustomJSONOArrayRequest registerRequest = new CustomJSONOArrayRequest(Request.Method.POST, url, arr, new Response.Listener<JSONArray>() {
+
+            CustomJSONObjectRequest registerRequest = new CustomJSONObjectRequest(Request.Method.POST, url, obj, new Response.Listener<JSONObject>() {
                 @Override
-                public void onResponse(JSONArray r) {
-                    JSONObject response = null;
-                    try {
-                        response = r.getJSONObject(0);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                public void onResponse(JSONObject response) {
+
                     JSONParser jsonParser = new JSONParser();
                     Intent homeIntent = new Intent(RegisterActivity.this, HomeActivity.class);
                     homeIntent.putExtra("login", jsonParser.getSingleString(response, "login"));

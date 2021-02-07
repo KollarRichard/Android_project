@@ -299,9 +299,9 @@ public class HomeActivity extends AppCompatActivity {
                         urls = arrayConcat(urls, jsonParser.getStringFromJson(response, "rst_img_url"));
                         categories = arrayConcat(categories, jsonParser.getStringFromJson(response, "rst_cat"));
                     }
-                } else {
-                    startList();
                 }
+                startList();
+
                 //System.out.println(nOfObjects);
             }
         }, new Response.ErrorListener() {

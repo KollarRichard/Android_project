@@ -115,7 +115,7 @@ public class MyAccActivity extends AppCompatActivity {
     private void lastLogin() {
         last = (TextView) findViewById(R.id.myAccLastLogin);
         Long datum;
-        String date = "";
+        String date = "date";
         if (MyProperties.getInstance().lastLogin != null) {
             datum = Long.parseLong(MyProperties.getInstance().lastLogin);
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm"); // the format of your date
@@ -134,7 +134,7 @@ public class MyAccActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(JSONArray r) {
-                //System.out.println(response.toString());
+
                 JSONObject response = null;
                 try {
                     response = r.getJSONObject(0);
@@ -142,17 +142,27 @@ public class MyAccActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 JSONParser jsonParser = new JSONParser();
-
                 names = jsonParser.getStringFromJson(response, "rst_name");
                 addresses = jsonParser.getStringFromJson(response, "rst_address");
                 ids = jsonParser.getStringFromJson(response, "objectId");
                 urls = jsonParser.getStringFromJson(response, "rst_img_url");
                 categories = jsonParser.getStringFromJson(response, "rst_cat");
-                if (names.length < nOfObjects) {
-                    updateData();
-                } else {
-                    startList();
+                if (r.length() > 1) {
+                    for (int i = 1; i < r.length(); i++) {
+                        try {
+                            response = r.getJSONObject(i);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        names = arrayConcat(names, jsonParser.getStringFromJson(response, "rst_name"));
+                        addresses = arrayConcat(addresses, jsonParser.getStringFromJson(response, "rst_address"));
+                        ids = arrayConcat(ids, jsonParser.getStringFromJson(response, "objectId"));
+                        urls = arrayConcat(urls, jsonParser.getStringFromJson(response, "rst_img_url"));
+                        categories = arrayConcat(categories, jsonParser.getStringFromJson(response, "rst_cat"));
+                    }
                 }
+                startList();
+
                 //System.out.println(nOfObjects);
             }
         }, new Response.ErrorListener() {
@@ -161,48 +171,9 @@ public class MyAccActivity extends AppCompatActivity {
                 System.out.println(error.toString());
                 if (error instanceof NoConnectionError) {
                     showError(0);
-                } else {
+                }/* else {
                     showError(error.networkResponse.statusCode);
-                }
-            }
-        });
-        MTAAApplication.getInstance().addToRequestQueue(dataRequest, "datarequest");
-    }
-
-    private void updateData() {
-        final JSONArray obj = new JSONArray();
-        CustomJSONOArrayRequest dataRequest = new CustomJSONOArrayRequest(Request.Method.GET, nUrl, obj, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray r) {
-                //System.out.println(response.toString());
-                JSONObject response = null;
-                try {
-                    response = r.getJSONObject(0);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                JSONParser jsonParser = new JSONParser();
-
-                names = arrayConcat(names, jsonParser.getStringFromJson(response, "rst_name"));
-                addresses = arrayConcat(addresses, jsonParser.getStringFromJson(response, "rst_address"));
-                ids = arrayConcat(ids, jsonParser.getStringFromJson(response, "objectId"));
-                urls = arrayConcat(urls, jsonParser.getStringFromJson(response, "rst_img_url"));
-                categories = arrayConcat(categories, jsonParser.getStringFromJson(response, "rst_cat"));
-                if (names.length < nOfObjects) {
-                    updateData();
-                } else {
-                    startList();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                System.out.println(error.toString());
-                if (error instanceof NoConnectionError) {
-                    showError(0);
-                } else {
-                    showError(error.networkResponse.statusCode);
-                }
+                }*/
             }
         });
         MTAAApplication.getInstance().addToRequestQueue(dataRequest, "datarequest");

@@ -31,7 +31,7 @@ public class EditActivity extends AppCompatActivity {
     private String category;
     private String imgUrl;
     private String nUrl;
-    private String url = "https://eu-api.backendless.com/39E3DA48-2F5E-4EC5-FF1C-15EC0E508400/7A5F072E-9D48-4C90-978F-DD29516E5562/data/restaurants";
+    private String url = "https://eu-api.backendless.com/39E3DA48-2F5E-4EC5-FF1C-15EC0E508400/7A5F072E-9D48-4C90-978F-DD29516E5562/data/restaurants/";
     private EditText mNameView;
     private EditText mAddressView;
     private Spinner mCategorySpin;
@@ -139,18 +139,13 @@ public class EditActivity extends AppCompatActivity {
 
     private void loadEditableData () {
         String newUrl;
-        JSONArray obj = new JSONArray();
+        JSONObject obj = new JSONObject();
         newUrl = url + itemID;
-        CustomJSONOArrayRequest detailRequest = new CustomJSONOArrayRequest(Request.Method.GET, newUrl, obj, new Response.Listener<JSONArray>() {
+        CustomJSONObjectRequest detailRequest = new CustomJSONObjectRequest(Request.Method.GET, newUrl, obj, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray r) {
+            public void onResponse(JSONObject response) {
                 //System.out.println(response);
-                JSONObject response = null;
-                try {
-                    response = r.getJSONObject(0);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+
                 JSONParser jsonParser = new JSONParser();
                 name = jsonParser.getSingleString(response, "rst_name");
                 address = jsonParser.getSingleString(response, "rst_address");
@@ -164,9 +159,9 @@ public class EditActivity extends AppCompatActivity {
                 System.out.println(error);
                 if (error instanceof NoConnectionError) {
                     showError(0);
-                } else {
+                } /*else {
                     showError(error.networkResponse.statusCode);
-                }
+                }*/
             }
         });
         MTAAApplication.getInstance().addToRequestQueue(detailRequest, "itemdetail");
@@ -194,7 +189,7 @@ public class EditActivity extends AppCompatActivity {
         String nName = mNameView.getText().toString();
         String nAddress = mAddressView.getText().toString();
         int nCat = mCategorySpin.getSelectedItemPosition();
-        try {
+        try { //put only changed data
             obj.put("rst_name", nName);
             obj.put("rst_address", nAddress);
             obj.put("rst_cat", nCat);
@@ -202,16 +197,11 @@ public class EditActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        arr.put(obj);
-        CustomJSONOArrayRequest updateRequest = new CustomJSONOArrayRequest(Request.Method.PUT, newUrl, arr, new Response.Listener<JSONArray>() {
+
+        CustomJSONObjectRequest updateRequest = new CustomJSONObjectRequest(Request.Method.PUT, newUrl, obj, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray r) {
-                JSONObject response = null;
-                try {
-                    response = r.getJSONObject(0);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            public void onResponse(JSONObject response) {
+
                 Intent detailIntent = new Intent(EditActivity.this, DetailActivity.class);
                 detailIntent.putExtra("itemID", itemID);
                 detailIntent.putExtra("userID", userID);
@@ -251,9 +241,9 @@ public class EditActivity extends AppCompatActivity {
                 System.out.println(error);
                 if (error instanceof NoConnectionError) {
                     showError(0);
-                } else {
+                } /*else {
                     showError(error.networkResponse.statusCode);
-                }
+                }*/
             }
         });
         MTAAApplication.getInstance().addToRequestQueue(deleteRequest, "deleteitem");

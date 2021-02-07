@@ -16,7 +16,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,7 +23,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private String loggedUser = "";
     private String loggedName = "";
-    private String url = "https://api.backendless.com/3EDD8AD3-62EC-D330-FF4D-4855F4C77C00/96B7A309-C50A-45F9-A833-27DBC102ED1E/data/Users/";
+    private String url = "https://eu-api.backendless.com/39E3DA48-2F5E-4EC5-FF1C-15EC0E508400/7A5F072E-9D48-4C90-978F-DD29516E5562/data/Users/";
     private EditText mOldPasswordView;
     private EditText mNewPasswordView;
     private EditText mConfPasswordView;
@@ -131,7 +130,6 @@ public class SettingsActivity extends AppCompatActivity {
         String cpassword = mConfPasswordView.getText().toString();
 
         JSONObject obj = new JSONObject();
-        JSONArray arr = new JSONArray();
         String newUrl = url + loggedUser;
 
 
@@ -142,10 +140,9 @@ public class SettingsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         System.out.println(obj);
-        arr.put(obj);
-        CustomJSONOArrayRequest updateRequest = new CustomJSONOArrayRequest(Request.Method.PUT, newUrl, arr, new Response.Listener<JSONArray>() {
+        CustomJSONObjectRequest updateRequest = new CustomJSONObjectRequest(Request.Method.PUT, newUrl, obj, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray response) {
+            public void onResponse(JSONObject response) {
 
             }
         }, new Response.ErrorListener() {
@@ -153,9 +150,9 @@ public class SettingsActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 if (error instanceof NoConnectionError) {
                     showError(0);
-                } else {
+                } /*else {
                     showError(error.networkResponse.statusCode);
-                }
+                }*/
             }
         });
         MTAAApplication.getInstance().addToRequestQueue(updateRequest, "update");
@@ -168,9 +165,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void attemptLogin() {
-        final String url = "https://api.backendless.com/3EDD8AD3-62EC-D330-FF4D-4855F4C77C00/96B7A309-C50A-45F9-A833-27DBC102ED1E/data/Users/login";
+        final String url = "https://eu-api.backendless.com/39E3DA48-2F5E-4EC5-FF1C-15EC0E508400/7A5F072E-9D48-4C90-978F-DD29516E5562/users/login";
         JSONObject obj = new JSONObject();
-        JSONArray arr = new JSONArray();
         String oldpassword = mOldPasswordView.getText().toString();
         String password = mNewPasswordView.getText().toString();
         String cpassword = mConfPasswordView.getText().toString();
@@ -226,8 +222,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
           //  System.out.println(obj);
-            arr.put(obj);
-            CustomJSONOArrayRequest loginRequest = new CustomJSONOArrayRequest(Request.Method.POST, url, arr, new Response.Listener<JSONObject>() {
+            CustomJSONObjectRequest loginRequest = new CustomJSONObjectRequest(Request.Method.POST, url, obj, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                    // System.out.println(response.toString());
@@ -241,9 +236,9 @@ public class SettingsActivity extends AppCompatActivity {
                     System.out.println(error.toString());
                     if (error instanceof NoConnectionError) {
                         showError(0);
-                    } else {
+                    } /*else {
                         showError(error.networkResponse.statusCode);
-                    }
+                    }*/
                 }
             });
             MTAAApplication.getInstance().addToRequestQueue(loginRequest, "login");

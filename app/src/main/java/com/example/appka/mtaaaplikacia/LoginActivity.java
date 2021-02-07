@@ -126,9 +126,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        final String url = "https://api.backendless.com/v1/users/login";
+        final String url = "https://eu-api.backendless.com/39E3DA48-2F5E-4EC5-FF1C-15EC0E508400/7A5F072E-9D48-4C90-978F-DD29516E5562/users/login";
         JSONObject obj = new JSONObject();
-        JSONArray arr = new JSONArray();
 
         // Reset errors.
         mEmailView.setError(null);
@@ -170,20 +169,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
 
             System.out.println(obj);
-            arr.put(obj);
-            CustomJSONOArrayRequest loginRequest = new CustomJSONOArrayRequest(Request.Method.POST, url, arr, new Response.Listener<JSONArray>() {
+            System.out.println(url);
+            CustomJSONObjectRequest loginRequest = new CustomJSONObjectRequest(Request.Method.POST, url, obj, new Response.Listener<JSONObject>() {
                 @Override
-                public void onResponse(JSONArray r) {
-                    JSONObject response = null;
-                    try {
-                        response = r.getJSONObject(0);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                public void onResponse(JSONObject response) {
+
                     System.out.println(response.toString());
                     JSONParser jsonParser = new JSONParser();
                     progressDialog.dismiss();
-                    startHomeScreen(jsonParser.getSingleString(response, "login"), jsonParser.getSingleString(response, "objectId"));
+                    startHomeScreen(jsonParser.getSingleString(response, "name"), jsonParser.getSingleString(response, "ownerId"));
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -191,9 +185,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     progressDialog.dismiss();
                     if (error instanceof NoConnectionError) {
                         showError(0);
-                    } else {
+                    } /*else {
                         showError(error.networkResponse.statusCode);
-                    }
+                    }*/
                 }
             });
             MTAAApplication.getInstance().addToRequestQueue(loginRequest, "login");
@@ -265,7 +259,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
         intent.putExtra("login", login);
         intent.putExtra("userID", userid);
-        if (users.length > 0 ) {
+        if (users != null ) {
             for (int i = 0; i < users.length; i++) {
                 if (userid.equals(users[i])) {
                     MyProperties.getInstance().lastLogin = logins[i];
@@ -278,7 +272,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private void getLastLogins() {
         JSONArray obj = new JSONArray();
-        final String url = "https://api.backendless.com/v1/data/Users?props=lastLogin%2CobjectId";
+        final String url = "https://eu-api.backendless.com/39E3DA48-2F5E-4EC5-FF1C-15EC0E508400/7A5F072E-9D48-4C90-978F-DD29516E5562/data/Users?property=objectId&property=lastLogin";
+        System.out.println(url);
         CustomJSONOArrayRequest llRequest = new CustomJSONOArrayRequest(Request.Method.GET, url, obj, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray r) {
@@ -288,9 +283,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
                 JSONParser jsonParser = new JSONParser();
                 logins = jsonParser.getStringFromJson(response, "lastLogin");
                 users = jsonParser.getStringFromJson(response, "objectId");
+                System.out.println(users[0]);
+                System.out.println(r);
+                if (r.length() > 1) {
+                    for(int i=1; i < r.length();i++){
+                        try {
+                            response = r.getJSONObject(i);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        logins = arrayConcat(logins,jsonParser.getStringFromJson(response, "lastLogin"));
+                        users = arrayConcat(users,jsonParser.getStringFromJson(response, "objectId"));
+                    }
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -299,5 +308,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
         MTAAApplication.getInstance().addToRequestQueue(llRequest, "logins");
+    }
+
+    private String[] arrayConcat(String[] a, String[] b) {
+        int aLen = a.length;
+        int bLen = b.length;
+        String[] c =  new String[aLen+bLen];
+        System.arraycopy(a, 0, c, 0, aLen);
+        System.arraycopy(b, 0, c, aLen, bLen);
+        return c;
     }
 }
