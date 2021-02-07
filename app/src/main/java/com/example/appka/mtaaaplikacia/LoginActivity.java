@@ -26,6 +26,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -127,6 +128,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void attemptLogin() {
         final String url = "https://api.backendless.com/v1/users/login";
         JSONObject obj = new JSONObject();
+        JSONArray arr = new JSONArray();
 
         // Reset errors.
         mEmailView.setError(null);
@@ -168,9 +170,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
 
             System.out.println(obj);
-            CustomJSONObjectRequest loginRequest = new CustomJSONObjectRequest(Request.Method.POST, url, obj, new Response.Listener<JSONObject>() {
+            arr.put(obj);
+            CustomJSONOArrayRequest loginRequest = new CustomJSONOArrayRequest(Request.Method.POST, url, arr, new Response.Listener<JSONArray>() {
                 @Override
-                public void onResponse(JSONObject response) {
+                public void onResponse(JSONArray r) {
+                    JSONObject response = null;
+                    try {
+                        response = r.getJSONObject(0);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     System.out.println(response.toString());
                     JSONParser jsonParser = new JSONParser();
                     progressDialog.dismiss();
@@ -268,11 +277,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void getLastLogins() {
-        JSONObject obj = new JSONObject();
+        JSONArray obj = new JSONArray();
         final String url = "https://api.backendless.com/v1/data/Users?props=lastLogin%2CobjectId";
-        CustomJSONObjectRequest llRequest = new CustomJSONObjectRequest(Request.Method.GET, url, obj, new Response.Listener<JSONObject>() {
+        CustomJSONOArrayRequest llRequest = new CustomJSONOArrayRequest(Request.Method.GET, url, obj, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray r) {
+                JSONObject response = null;
+                try {
+                    response = r.getJSONObject(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 JSONParser jsonParser = new JSONParser();
                 logins = jsonParser.getStringFromJson(response, "lastLogin");
                 users = jsonParser.getStringFromJson(response, "objectId");

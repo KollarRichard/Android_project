@@ -23,6 +23,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.LinkedList;
@@ -265,23 +267,38 @@ public class HomeActivity extends AppCompatActivity {
 
     private void startUpdatingData() {
         progressDialog.show();
-        JSONObject obj = new JSONObject();
+        JSONArray obj = new JSONArray();
 
-        CustomJSONObjectRequest dataRequest = new CustomJSONObjectRequest(Request.Method.GET, url, obj, new Response.Listener<JSONObject>() {
+        CustomJSONOArrayRequest dataRequest = new CustomJSONOArrayRequest(Request.Method.GET, url, obj, new Response.Listener<JSONArray>() {
 
             @Override
-            public void onResponse(JSONObject response) {
-                System.out.println(response.length());
+            public void onResponse(JSONArray r) {
+
+                JSONObject response = null;
+                try {
+                    response = r.getJSONObject(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 JSONParser jsonParser = new JSONParser();
-                nOfObjects = jsonParser.getTotalObjects(response);
-                nUrl = jsonParser.getNextPageUrl(response);
                 names = jsonParser.getStringFromJson(response, "rst_name");
                 addresses = jsonParser.getStringFromJson(response, "rst_address");
                 ids = jsonParser.getStringFromJson(response, "objectId");
                 urls = jsonParser.getStringFromJson(response, "rst_img_url");
                 categories = jsonParser.getStringFromJson(response, "rst_cat");
-                if (names.length < nOfObjects) {
-                    updateData();
+                if (r.length() > 1) {
+                    for(int i=1; i < r.length();i++){
+                        try {
+                            response = r.getJSONObject(i);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        names = arrayConcat(names, jsonParser.getStringFromJson(response, "rst_name"));
+                        addresses = arrayConcat(addresses, jsonParser.getStringFromJson(response, "rst_address"));
+                        ids = arrayConcat(ids, jsonParser.getStringFromJson(response, "objectId"));
+                        urls = arrayConcat(urls, jsonParser.getStringFromJson(response, "rst_img_url"));
+                        categories = arrayConcat(categories, jsonParser.getStringFromJson(response, "rst_cat"));
+                    }
                 } else {
                     startList();
                 }
@@ -302,9 +319,9 @@ public class HomeActivity extends AppCompatActivity {
         MTAAApplication.getInstance().addToRequestQueue(dataRequest, "datarequest");
     }
 
-    private void updateData() {
+/*    private void updateData() {
         final JSONObject obj = new JSONObject();
-        CustomJSONObjectRequest dataRequest = new CustomJSONObjectRequest(Request.Method.GET, nUrl, obj, new Response.Listener<JSONObject>() {
+        CustomJSONOArrayRequest dataRequest = new CustomJSONOArrayRequest(Request.Method.GET, nUrl, obj, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 //System.out.println(response.toString());
@@ -333,7 +350,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
         MTAAApplication.getInstance().addToRequestQueue(dataRequest, "datarequest");
-    }
+    }*/
 
     private String[] arrayConcat(String[] a, String[] b) {
         int aLen = a.length;

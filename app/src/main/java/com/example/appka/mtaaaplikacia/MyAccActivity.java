@@ -17,6 +17,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -127,15 +129,20 @@ public class MyAccActivity extends AppCompatActivity {
     private void startUpdatingData() {
         progressDialog.show();
         newUrl = url + "%27" + loggedUser + "%27";
-        JSONObject obj = new JSONObject();
-        CustomJSONObjectRequest dataRequest = new CustomJSONObjectRequest(Request.Method.GET, newUrl, obj, new Response.Listener<JSONObject>() {
+        JSONArray obj = new JSONArray();
+        CustomJSONOArrayRequest dataRequest = new CustomJSONOArrayRequest(Request.Method.GET, newUrl, obj, new Response.Listener<JSONArray>() {
 
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray r) {
                 //System.out.println(response.toString());
+                JSONObject response = null;
+                try {
+                    response = r.getJSONObject(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 JSONParser jsonParser = new JSONParser();
-                nOfObjects = jsonParser.getTotalObjects(response);
-                nUrl = jsonParser.getNextPageUrl(response);
+
                 names = jsonParser.getStringFromJson(response, "rst_name");
                 addresses = jsonParser.getStringFromJson(response, "rst_address");
                 ids = jsonParser.getStringFromJson(response, "objectId");
@@ -163,13 +170,19 @@ public class MyAccActivity extends AppCompatActivity {
     }
 
     private void updateData() {
-        final JSONObject obj = new JSONObject();
-        CustomJSONObjectRequest dataRequest = new CustomJSONObjectRequest(Request.Method.GET, nUrl, obj, new Response.Listener<JSONObject>() {
+        final JSONArray obj = new JSONArray();
+        CustomJSONOArrayRequest dataRequest = new CustomJSONOArrayRequest(Request.Method.GET, nUrl, obj, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray r) {
                 //System.out.println(response.toString());
+                JSONObject response = null;
+                try {
+                    response = r.getJSONObject(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 JSONParser jsonParser = new JSONParser();
-                nUrl = jsonParser.getNextPageUrl(response);
+
                 names = arrayConcat(names, jsonParser.getStringFromJson(response, "rst_name"));
                 addresses = arrayConcat(addresses, jsonParser.getStringFromJson(response, "rst_address"));
                 ids = arrayConcat(ids, jsonParser.getStringFromJson(response, "objectId"));

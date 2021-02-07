@@ -19,6 +19,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -138,12 +139,18 @@ public class EditActivity extends AppCompatActivity {
 
     private void loadEditableData () {
         String newUrl;
-        JSONObject obj = new JSONObject();
+        JSONArray obj = new JSONArray();
         newUrl = url + itemID;
-        CustomJSONObjectRequest detailRequest = new CustomJSONObjectRequest(Request.Method.GET, newUrl, obj, new Response.Listener<JSONObject>() {
+        CustomJSONOArrayRequest detailRequest = new CustomJSONOArrayRequest(Request.Method.GET, newUrl, obj, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray r) {
                 //System.out.println(response);
+                JSONObject response = null;
+                try {
+                    response = r.getJSONObject(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 JSONParser jsonParser = new JSONParser();
                 name = jsonParser.getSingleString(response, "rst_name");
                 address = jsonParser.getSingleString(response, "rst_address");
@@ -182,6 +189,7 @@ public class EditActivity extends AppCompatActivity {
 
     private void updateData() {
         JSONObject obj = new JSONObject();
+        JSONArray arr = new JSONArray();
         String newUrl = url + itemID;
         String nName = mNameView.getText().toString();
         String nAddress = mAddressView.getText().toString();
@@ -194,9 +202,16 @@ public class EditActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        CustomJSONObjectRequest updateRequest = new CustomJSONObjectRequest(Request.Method.PUT, newUrl, obj, new Response.Listener<JSONObject>() {
+        arr.put(obj);
+        CustomJSONOArrayRequest updateRequest = new CustomJSONOArrayRequest(Request.Method.PUT, newUrl, arr, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray r) {
+                JSONObject response = null;
+                try {
+                    response = r.getJSONObject(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 Intent detailIntent = new Intent(EditActivity.this, DetailActivity.class);
                 detailIntent.putExtra("itemID", itemID);
                 detailIntent.putExtra("userID", userID);

@@ -21,6 +21,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -115,6 +116,7 @@ public class AddActivity extends AppCompatActivity {
         boolean cancel = false;
         final String url = "https://api.backendless.com/3EDD8AD3-62EC-D330-FF4D-4855F4C77C00/96B7A309-C50A-45F9-A833-27DBC102ED1E/data/restaurants/";
         JSONObject obj = new JSONObject();
+        JSONArray arr = new JSONArray();
         int cat = 1;
         String name = mNameET.getText().toString();
         String address = mAddressET.getText().toString();
@@ -144,7 +146,8 @@ public class AddActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            CustomJSONObjectRequest addRequest = new CustomJSONObjectRequest(Request.Method.POST, url, obj, new Response.Listener<JSONObject>() {
+            arr.put(obj);
+            CustomJSONOArrayRequest addRequest = new CustomJSONOArrayRequest(Request.Method.POST, url, arr, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     System.out.println(response.toString());

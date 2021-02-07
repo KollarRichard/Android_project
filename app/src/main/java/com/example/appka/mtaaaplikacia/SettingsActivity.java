@@ -16,6 +16,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -130,6 +131,7 @@ public class SettingsActivity extends AppCompatActivity {
         String cpassword = mConfPasswordView.getText().toString();
 
         JSONObject obj = new JSONObject();
+        JSONArray arr = new JSONArray();
         String newUrl = url + loggedUser;
 
 
@@ -140,9 +142,10 @@ public class SettingsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         System.out.println(obj);
-        CustomJSONObjectRequest updateRequest = new CustomJSONObjectRequest(Request.Method.PUT, newUrl, obj, new Response.Listener<JSONObject>() {
+        arr.put(obj);
+        CustomJSONOArrayRequest updateRequest = new CustomJSONOArrayRequest(Request.Method.PUT, newUrl, arr, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
 
             }
         }, new Response.ErrorListener() {
@@ -167,6 +170,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void attemptLogin() {
         final String url = "https://api.backendless.com/3EDD8AD3-62EC-D330-FF4D-4855F4C77C00/96B7A309-C50A-45F9-A833-27DBC102ED1E/data/Users/login";
         JSONObject obj = new JSONObject();
+        JSONArray arr = new JSONArray();
         String oldpassword = mOldPasswordView.getText().toString();
         String password = mNewPasswordView.getText().toString();
         String cpassword = mConfPasswordView.getText().toString();
@@ -222,7 +226,8 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
           //  System.out.println(obj);
-            CustomJSONObjectRequest loginRequest = new CustomJSONObjectRequest(Request.Method.POST, url, obj, new Response.Listener<JSONObject>() {
+            arr.put(obj);
+            CustomJSONOArrayRequest loginRequest = new CustomJSONOArrayRequest(Request.Method.POST, url, arr, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                    // System.out.println(response.toString());

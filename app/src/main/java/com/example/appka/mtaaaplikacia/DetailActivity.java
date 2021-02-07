@@ -16,6 +16,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class DetailActivity extends AppCompatActivity {
@@ -114,12 +116,17 @@ public class DetailActivity extends AppCompatActivity {
 
     private void getDetailedData(String s) {
         String newUrl;
-        JSONObject obj = new JSONObject();
+        JSONArray obj = new JSONArray();
         newUrl = url + s;
-        CustomJSONObjectRequest detailRequest = new CustomJSONObjectRequest(Request.Method.GET, newUrl, obj, new Response.Listener<JSONObject>() {
+        CustomJSONOArrayRequest detailRequest = new CustomJSONOArrayRequest(Request.Method.GET, newUrl, obj, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
-                System.out.println(response);
+            public void onResponse(JSONArray r) {
+                JSONObject response = null;
+                try {
+                    response = r.getJSONObject(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 JSONParser jsonParser = new JSONParser();
                 name = jsonParser.getSingleString(response, "rst_name");
                 System.out.println(name);
@@ -144,12 +151,17 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void getOwner(String id) {
-        JSONObject obj = new JSONObject();
+        JSONArray obj = new JSONArray();
         String url = "https://api.backendless.com/v1/data/Users?where=objectId%20%3D%20%27" + id + "%27";
-        CustomJSONObjectRequest ownerRequest = new CustomJSONObjectRequest(Request.Method.GET, url, obj, new Response.Listener<JSONObject>() {
+        CustomJSONOArrayRequest ownerRequest = new CustomJSONOArrayRequest(Request.Method.GET, url, obj, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
-                System.out.println(response);
+            public void onResponse(JSONArray r) {
+                JSONObject response = null;
+                try {
+                    response = r.getJSONObject(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 JSONParser jsonParser = new JSONParser();
                 owner = jsonParser.getStringFromJson(response, "login");
                 setTextFields();

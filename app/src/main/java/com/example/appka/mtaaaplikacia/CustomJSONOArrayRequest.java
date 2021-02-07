@@ -2,17 +2,19 @@ package com.example.appka.mtaaaplikacia;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class CustomJSONObjectRequest extends JsonObjectRequest {
+public class CustomJSONOArrayRequest extends JsonArrayRequest {
 
-    public CustomJSONObjectRequest(int method, String url, JSONObject jsonRequest,Response.Listener listener, Response.ErrorListener errorListener)
+    public CustomJSONOArrayRequest(int method, String url, JSONArray jsonRequest, Response.Listener listener, Response.ErrorListener errorListener)
     {
             super(method, url, jsonRequest, listener, errorListener);
         }

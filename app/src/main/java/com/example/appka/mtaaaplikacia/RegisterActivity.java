@@ -12,6 +12,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -70,6 +71,7 @@ public class RegisterActivity extends AppCompatActivity {
         String password = mPasswordView.getText().toString();
         String cpassword = mCPasswordView.getText().toString();
         JSONObject obj = new JSONObject();
+        JSONArray arr = new JSONArray();
 
         try {
             obj.put("login", login);
@@ -124,9 +126,16 @@ public class RegisterActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            CustomJSONObjectRequest registerRequest = new CustomJSONObjectRequest(Request.Method.POST, url, obj, new Response.Listener<JSONObject>() {
+            arr.put(obj);
+            CustomJSONOArrayRequest registerRequest = new CustomJSONOArrayRequest(Request.Method.POST, url, arr, new Response.Listener<JSONArray>() {
                 @Override
-                public void onResponse(JSONObject response) {
+                public void onResponse(JSONArray r) {
+                    JSONObject response = null;
+                    try {
+                        response = r.getJSONObject(0);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     JSONParser jsonParser = new JSONParser();
                     Intent homeIntent = new Intent(RegisterActivity.this, HomeActivity.class);
                     homeIntent.putExtra("login", jsonParser.getSingleString(response, "login"));
