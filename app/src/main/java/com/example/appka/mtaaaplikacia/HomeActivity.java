@@ -1,8 +1,10 @@
 package com.example.appka.mtaaaplikacia;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,12 +48,14 @@ public class HomeActivity extends AppCompatActivity {
     private String loggedUser = "";
     private EditText searchET;
     ProgressDialog progressDialog;
+    private static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         final TextView mTitle = (TextView)findViewById(R.id.homeTV);
+        context = getApplicationContext();
         loggedUser = getIntent().getStringExtra("userID");
         progressDialog = new ProgressDialog(HomeActivity.this);
         progressDialog.setTitle("Please wait");
@@ -189,6 +194,7 @@ public class HomeActivity extends AppCompatActivity {
             TwoLineArrayAdapter adapter = new TwoLineArrayAdapter(this, R.layout.list_row, names, addresses, categories);
             mListView = (ListView) findViewById(R.id.restaurantList);
             mListView.setAdapter(adapter);
+
             if (progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }
@@ -300,6 +306,11 @@ public class HomeActivity extends AppCompatActivity {
                         categories = arrayConcat(categories, jsonParser.getStringFromJson(response, "rst_cat"));
                     }
                 }
+                saveArrayData(names,"names",context);
+                saveArrayData(addresses,"addresses",context);
+                saveArrayData(ids,"ids",context);
+                saveArrayData(urls,"urls",context);
+                saveArrayData(categories,"categories",context);
                 startList();
 
                 //System.out.println(nOfObjects);
@@ -310,6 +321,13 @@ public class HomeActivity extends AppCompatActivity {
                 System.out.println(error.toString());
                 if (error instanceof NoConnectionError) {
                     showError(0);
+
+                    names = getArrayData("names",context);
+                    addresses = getArrayData("addresses",context);
+                    ids = getArrayData("ids",context);
+                    urls = getArrayData("urls",context);
+                    categories = getArrayData("categories",context);
+                    startList();
                 } /*else {
                     showError(error.networkResponse.statusCode);
                 }*/
@@ -319,6 +337,29 @@ public class HomeActivity extends AppCompatActivity {
         MTAAApplication.getInstance().addToRequestQueue(dataRequest, "datarequest");
     }
 
+
+    public boolean saveArrayData(String[] array, String arrayName, Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences("preferencename", 0);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(arrayName +" _size ", array.length);
+        for(int i=0 ; i < array.length ; i++){
+            editor.putString(arrayName + "_ " + i, array[i]);
+        }
+        return editor.commit();
+    }
+
+    public String[] getArrayData(String arrayName, Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences("preferencename", 0);
+
+        int size = prefs.getInt(arrayName + " _size ", 0);
+        String[] arr = new String[size];
+
+        for(int i=0 ; i < size ; i++){
+           arr[i] = prefs.getString(arrayName + "_ " + i,"no_data");
+            //editor.getString(arrayName + "_ " + i, array[i]);
+        }
+        return arr;
+    }
 /*    private void updateData() {
         final JSONObject obj = new JSONObject();
         CustomJSONOArrayRequest dataRequest = new CustomJSONOArrayRequest(Request.Method.GET, nUrl, obj, new Response.Listener<JSONObject>() {
