@@ -86,13 +86,13 @@
         android:paddingTop="10dp">
 
 
-    <ListView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginBottom="60dp"
-        android:id="@+id/restaurantList" />
+        <ListView
+            android:id="@+id/restaurantList"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="60dp" />
 
-    <Button
+        <Button
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text="@string/action_add"
